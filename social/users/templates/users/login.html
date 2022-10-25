@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="block">
+<div class="content">
+
+<h2>Log In</h2>
+
+<form method="post">
+
+{% csrf_token %}
+<div class="field">
+<div class="control">
+    {{form.as_p}}
+</div>
+</div>
+<input class="button is-rounded" type="submit" value="Login">
+</form>
+</div>
+</div>
+
+{% endblock %}
