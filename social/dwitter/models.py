@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
+from .models import Dweet
+
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
@@ -12,10 +15,13 @@ def create_profile(sender, instance, created, **kwargs):
         user_profile.follows.add(instance.profile)
         user_profile.save()
 
+@receiver(post_save, sender=Dweet.objects.filter(user__profile__in=request.user.follows))
+
 # post_save.connect(create_profile, sender=User)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pictures')
     follows = models.ManyToManyField(
         'self',
         related_name='followed_by',
@@ -24,6 +30,9 @@ class Profile(models.Model):
     )
     def __str__(self):
         return self.user.username
+
+    # def get_absolute_url(self):
+    #     return reverse('profile_update',kwargs={'pk':self.pk})
 
 class Dweet(models.Model):
     user = models.ForeignKey(
@@ -38,6 +47,9 @@ class Dweet(models.Model):
             f"({self.created_at:%Y-%m-%d %H:%M}): "
             f"{self.body[:30]}..."
         )
+
+    def get_absolute_url(self):
+        return reverse('dweet_delete',kwargs={'pk':self.pk})
 
 
 

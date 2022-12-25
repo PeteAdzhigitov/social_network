@@ -4,12 +4,19 @@
 
 <div class="column">
 
+        {% if not dweets %}
+        <h1>Here will be displayed your or your followers' dweets</h1>
+        {% endif %}
         {% for dweet in dweets %}
             <div class="box">
                 {{ dweet.body }}
                 <span class="is-small has-text-grey-light">
                     ({{ dweet.created_at }} by {{ dweet.user.username }}
                 </span>
+                <div class="buttons has-addons">
+                   <a href="{% url 'dwitter:dweet_update' dweet.id %}"><button class="button is-info is-light">Update</button></a>
+                     <a href="{% url 'dwitter:dweet_delete' dweet.id %}"><button class="button is-danger is-light">Delete</button></a>
+                </div>
             </div>
         {% endfor %}
 

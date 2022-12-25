@@ -4,15 +4,29 @@
 
 {% block content %}
 
+
+<div class="block">
+    <figure class="image is-128x128">
+        {% if user != profile_user.user %}
+            <img class="is-rounded" src="{{profile_user.image.url}}">
+        {%else%}
+        <a href="{% url 'dwitter:profile_update' pk=user.profile.id %}">
+            <img class="is-rounded" src="{{profile_user.image.url}}">
+        </a>
+        {%endif%}
+    </figure>
+</div>
+
 <div class="column">
     <div class="block">
-    <h1 class="title is-1">
-        {{profile.user.username|upper}}'s Dweets
-    </h1>
+    <h3 class="title is-1">
+        {{profile_user.user.username|upper}}'s Dweets
+    </h3>
+        <p>{{profile_user.user.email|lower}}</p><br>
     <form method="post">
     {% csrf_token%}
     <div class="buttons has-addons">
-    {% if profile in user.profile.follows.all %}
+    {% if profile_user in user.profile.follows.all %}
         <button class="button is-success is-static">Follow</button>
         <button class="button is-danger" name="follow" value="unfollow">
             Unfollow
@@ -25,9 +39,10 @@
     {% endif %}
 </div>
     </form>
+
     </div>
     <div class="content">
-    {% for dweet in profile.user.dweets.all %}
+    {% for dweet in profile_user.user.dweets.all %}
     <div class="box">
         {{dweet.body}}
         <span class="is-small has-text-grey-light">
@@ -51,11 +66,11 @@
 
     <div class="block">
         <h3 class="title is-4">
-            {{profile.user.username}} follows:
+            {{profile_user.user.username}} follows:
         </h3>
         <div class="content">
             <ul>
-            {% for following in profile.follows.all %}
+            {% for following in profile_user.follows.all %}
 <!--                {% if following == None %}-->
 
 <!--                <li>Something</li>-->
@@ -75,11 +90,11 @@
 
     <div class="block">
         <h3 class="title is-4">
-            {{profile.user.username}} is followed by:
+            {{profile_user.user.username}} is followed by:
         </h3>
         <div class="content">
             <ul>
-            {% for follower in profile.followed_by.all %}
+            {% for follower in profile_user.followed_by.all %}
                 <li>
                     <a href="{% url 'dwitter:profile' follower.id %}">
                         {{ follower }}
@@ -91,5 +106,7 @@
     </div>
 
 </div>
+
+
 
 {% endblock content %}
